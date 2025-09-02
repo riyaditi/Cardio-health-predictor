@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CardioCheck AI | Health Predictor</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/gaugeJS/dist/gauge.min.js"></script>
+
+    <style>
+        :root {
+            --primary-color: #1abc9c; --secondary-color: #16a085; --success-color: #2ecc71;
+            --warning-color: #f1c40f; --danger-color: #e74c3c; --bg-color: #ecf0f1;
+            --card-bg-color: #ffffff; --text-color: #34495e; --heading-color: #2c3e50;
+            --border-radius: 15px; --shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Poppins', sans-serif; background-color: var(--bg-color);
+            background-image: url('https://www.google.com/search?q=subtle+abstract+medical+background&tbm=isch&usg=AI4_-kSFs7q0n4j2r7y-c3g6a7p8b9q0Xw&sa=X&ved=2ahUKEwjG4Z_y8v6GAxX_gFYBHZ_wB-kQ_AUoAXoECAIQAw#imgrc=oM0b1b1f0Z0YvM');
+            background-size: cover; background-position: center; background-attachment: fixed;
+            color: var(--text-color); display: flex; justify-content: center; align-items: center;
+            min-height: 100vh; padding: 20px;
+        }
+        .main-container {
+            display: flex; max-width: 1100px; width: 100%; background: var(--card-bg-color);
+            border-radius: var(--border-radius); box-shadow: var(--shadow); overflow: hidden;
+        }
+        .illustration-panel {
+            flex-basis: 45%; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            padding: 40px; color: white; display: flex; flex-direction: column; justify-content: center;
+            align-items: center; text-align: center;
+        }
+        .illustration-panel img { max-width: 80%; margin-bottom: 20px; }
+        .illustration-panel h2 { font-size: 24px; margin-bottom: 10px; }
+        .illustration-panel p { font-size: 16px; opacity: 0.9; }
+        .form-panel { flex-basis: 55%; padding: 40px; }
+        .header h2 { font-weight: 700; font-size: 28px; color: var(--heading-color); text-align: center; margin-bottom: 30px; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .form-group { display: flex; flex-direction: column; }
+        label { margin-bottom: 8px; font-weight: 500; font-size: 14px; }
+        input, select { padding: 12px 15px; border: 1px solid #dfe6e9; border-radius: 8px; font-size: 16px; font-family: 'Poppins', sans-serif; transition: all 0.2s ease; }
+        input:focus, select:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(26, 188, 156, 0.2); }
+        button { grid-column: 1 / -1; background: linear-gradient(45deg, var(--primary-color), var(--secondary-color)); color: white; padding: 15px; border: none; border-radius: 8px; cursor: pointer; font-size: 18px; font-weight: 600; transition: all 0.3s ease; margin-top: 10px; }
+        button:hover { transform: translateY(-3px); box-shadow: 0 8px 15px rgba(26, 188, 156, 0.3); }
+        .loader { display: none; margin: 20px auto; border: 5px solid #f3f3f3; border-top: 5px solid var(--primary-color); border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        #results { margin-top: 30px; padding: 25px; border-radius: 10px; background-color: var(--bg-color); display: none; opacity: 0; transform: translateY(20px); transition: opacity 0.5s ease, transform 0.5s ease; }
+        #results.visible { display: block; opacity: 1; transform: translateY(0); }
+        #results h3 { margin-top: 0; font-weight: 600; color: var(--heading-color); text-align: center; margin-bottom: 15px; }
+        #results ul { padding-left: 20px; } #results li { margin-bottom: 10px; }
+        .gauge-container { position: relative; width: 250px; height: 125px; margin: 0 auto 10px auto; }
+        #risk-gauge-text { position: absolute; bottom: 0; width: 100%; text-align: center; font-size: 24px; font-weight: 700; }
+        @media (max-width: 992px) { .main-container { flex-direction: column; } .illustration-panel { display: none; } .form-panel { padding: 30px; } }
+        @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+<div class="main-container">
+    <div class="illustration-panel">
+        
+        <h2>AI-Powered Health Insights</h2>
+        <p>Leveraging machine learning to provide you with proactive insights into your cardiovascular health.</p>
+    </div>
+    <div class="form-panel">
+        <div class="header">
+            <h2>Cardiovascular Risk Assessment</h2>
+        </div>
+        <form id="health-form">
+            <div class="form-grid">
+                <div class="form-group"><label for="age_years">Age (years)</label><input type="number" id="age_years" placeholder="e.g., 50" required></div>
+                <div class="form-group"><label for="gender">Gender</label><select id="gender"><option value="2">Male</option><option value="1">Female</option></select></div>
+                <div class="form-group"><label for="height">Height (cm)</label><input type="number" id="height" placeholder="e.g., 170" required></div>
+                <div class="form-group"><label for="weight">Weight (kg)</label><input type="number" id="weight" step="0.1" placeholder="e.g., 75.5" required></div>
+                <div class="form-group"><label for="ap_hi">Systolic Pressure</label><input type="number" id="ap_hi" placeholder="e.g., 120" required></div>
+                <div class="form-group"><label for="ap_lo">Diastolic Pressure</label><input type="number" id="ap_lo" placeholder="e.g., 80" required></div>
+                <div class="form-group"><label for="cholesterol">Cholesterol</label><select id="cholesterol"><option value="1">Normal</option><option value="2">Above Normal</option><option value="3">Well Above Normal</option></select></div>
+                <div class="form-group"><label for="gluc">Glucose</label><select id="gluc"><option value="1">Normal</option><option value="2">Above Normal</option><option value="3">Well Above Normal</option></select></div>
+                <div class="form-group"><label for="smoke">Smoker</label><select id="smoke"><option value="0">No</option><option value="1">Yes</option></select></div>
+                <div class="form-group"><label for="alco">Alcohol Intake</label><select id="alco"><option value="0">No</option><option value="1">Yes</option></select></div>
+                <div class="form-group" style="grid-column: 1 / -1;"><label for="active">Physical Activity</label><select id="active"><option value="1">Yes</option><option value="0">No</option></select></div>
+            </div>
+            <button type="submit">Analyze My Health</button>
+        </form>
+        <div class="loader" id="loader"></div>
+        <div id="results">
+            <h3>Analysis Results</h3>
+            <div class="gauge-container">
+                <canvas id="risk-gauge" width="250" height="125"></canvas>
+                <div id="risk-gauge-text"></div>
+            </div>
+            <div id="recommendations-container"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('health-form').addEventListener('submit', async function(event) {
+        event.preventDefault();
+        const resultsDiv = document.getElementById('results');
+        const loader = document.getElementById('loader');
+        const recommendationsContainer = document.getElementById('recommendations-container');
+        resultsDiv.classList.remove('visible');
+        loader.style.display = 'block';
+        recommendationsContainer.innerHTML = '';
+        
+        const data = {
+            age_years: parseInt(document.getElementById('age_years').value),
+            gender: parseInt(document.getElementById('gender').value),
+            height: parseInt(document.getElementById('height').value),
+            weight: parseFloat(document.getElementById('weight').value),
+            ap_hi: parseInt(document.getElementById('ap_hi').value),
+            ap_lo: parseInt(document.getElementById('ap_lo').value),
+            cholesterol: parseInt(document.getElementById('cholesterol').value),
+            gluc: parseInt(document.getElementById('gluc').value),
+            smoke: parseInt(document.getElementById('smoke').value),
+            alco: parseInt(document.getElementById('alco').value),
+            active: parseInt(document.getElementById('active').value),
+        };
+
+        try {
+            const response = await fetch('/predict', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+            if (!response.ok) throw new Error(`Error: ${response.statusText}`);
+            const result = await response.json();
+            
+            const riskPercent = (result.prediction_probability * 100);
+            
+            const gaugeOptions = {
+                angle: -0.2, lineWidth: 0.2, radiusScale: 1,
+                pointer: { length: 0.6, strokeWidth: 0.035, color: 'var(--text-color)' },
+                limitMax: 100, limitMin: 0,
+                staticZones: [
+                   {strokeStyle: "var(--success-color)", min: 0, max: 40},
+                   {strokeStyle: "var(--warning-color)", min: 40, max: 60},
+                   {strokeStyle: "var(--danger-color)", min: 60, max: 100}
+                ],
+                staticLabels: { font: "12px 'Poppins'", labels: [0, 40, 60, 100], color: "#000000" },
+            };
+            
+            const target = document.getElementById('risk-gauge');
+            const gauge = new Gauge(target).setOptions(gaugeOptions);
+            
+            gauge.maxValue = 100;
+            gauge.setMinValue(0);
+            gauge.animationSpeed = 40;
+            gauge.set(riskPercent);
+            
+            document.getElementById('risk-gauge-text').innerText = `${riskPercent.toFixed(1)}% Risk`;
+            document.getElementById('risk-gauge-text').style.color = riskPercent > 60 ? 'var(--danger-color)' : (riskPercent > 40 ? '#D68910' : 'var(--success-color)');
+            
+            let htmlContent = `<h4>Personalized Recommendations:</h4><ul>`;
+            result.recommendations.forEach(rec => { htmlContent += `<li>${rec}</li>`; });
+            htmlContent += `</ul>`;
+            recommendationsContainer.innerHTML = htmlContent;
+
+        } catch (error) {
+            recommendationsContainer.innerHTML = `<p style="color: var(--danger-color);">Could not get a prediction. Please check your inputs or ensure the server is running.</p>`;
+            console.error('Fetch error:', error);
+        } finally {
+            loader.style.display = 'none';
+            resultsDiv.classList.add('visible');
+        }
+    });
+</script>
+
+</body>
+</html>
