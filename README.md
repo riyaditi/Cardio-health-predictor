@@ -9,6 +9,7 @@ This project was developed as an end-to-end data science application, covering e
 ---
 
 ## ✨ Key Features
+<img width="1922" height="1082" alt="image" src="https://github.com/user-attachments/assets/e6b5b36c-380b-470c-a8e7-3f3f1a12f957" />
 
 * **📈 AI-Powered Prediction:** Utilizes a `RandomForestClassifier` trained on a dataset of 70,000 patient records to predict risk probability.
 * **📊 Interactive UI:** A clean, modern, and responsive user interface for easy data input.
