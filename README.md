@@ -30,3 +30,57 @@ This project was developed as an end-to-end data science application, covering e
 ---
 
 ## 📂 Project Structure
+/cardio-health-predictor/
+|-- app/
+|   |-- static/
+|   |   |-- images/
+|   |   |   |-- medical_background.jpg
+|   |-- templates/
+|   |   |-- index.html
+|   |-- app.py
+|   |-- model.joblib
+|   |-- scaler.joblib
+|-- data/
+|   |-- cardio_train.csv
+|-- notebooks/
+|   |-- 1_data_exploration.ipynb
+|-- scripts/
+|   |-- train_model.py
+|-- requirements.txt
+|-- README.md
+
+---
+
+## ⚙️ Setup and Installation
+
+Follow these steps to get the project running locally.
+
+### **1. Prerequisites**
+
+* Python 3.8+
+* pip (Python package installer)
+
+### **2. Clone the Repository**
+
+```bash
+git clone [https://github.com/riyaditi/cardio-health-predictor.git](https://github.com/your-username/cardio-health-predictor.git)
+cd cardio-health-predictor
+```
+### **3. Create a requirements.txt File**
+It's a best practice to create a file listing all dependencies. Run this command in your terminal:
+pip freeze > requirements.txt
+
+### **4. Install Dependencies**
+Install all the necessary libraries from the requirements.txt file.
+
+5. Train the Model
+Run the training script to process the data and generate the model.joblib and scaler.joblib files inside the app/ directory.
+python scripts/train_model.py
+
+6.  Run the Flask Server
+Navigate to the app directory and start the Flask application.
+cd app
+python app.py
+
+The application will be running at http://127.0.0.1:5000.
+
